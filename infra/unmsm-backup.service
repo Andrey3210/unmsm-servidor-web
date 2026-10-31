@@ -1,0 +1,7 @@
+[Unit]
+Description=Copia de seguridad del sitio UNMSM
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/backup-unmsm
+User=root
+UMask=0077

@@ -1,0 +1,14 @@
+infra/private/
+infra/vm/
+infra/debs/
+infra/*.iso
+infra/*.vdi
+infra/*.vmdk
+infra/*.exe
+infra/serial.log
+**/__pycache__/
+**/*.pyc
+informe/render/
+evidencias/*.html
+evidencias/respaldo-unmsm.tar.gz
+*.zip
