@@ -1,0 +1,66 @@
+[
+  {
+    "command": "hostnamectl; ip -br address; ip route; resolvectl status enp0s3 | head -n 14; lsblk -o NAME,SIZE,TYPE,MOUNTPOINTS",
+    "exit_code": 0,
+    "output": " Static hostname: web-unmsm\n       Icon name: computer-vm\n         Chassis: vm 🖴\n      Machine ID: 2fd81afa67414a058f881783dc2475a7\n         Boot ID: 7581f62955d34801bcca9c84a819a27e\n  Virtualization: oracle\nOperating System: Ubuntu 24.04.5 LTS\n          Kernel: Linux 6.8.0-147-generic\n    Architecture: x86-64\n Hardware Vendor: innotek GmbH\n  Hardware Model: VirtualBox\nFirmware Version: VirtualBox\n   Firmware Date: Fri 2006-12-01\n    Firmware Age: 19y 11month\nlo               UNKNOWN        127.0.0.1/8 ::1/128 \nenp0s3           UP             10.0.2.15/24 fe80::a00:27ff:fe02:d0f3/64 \ndefault via 10.0.2.2 dev enp0s3 proto static \n10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15 \nLink 2 (enp0s3)\n    Current Scopes: DNS\n         Protocols: +DefaultRoute -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported\nCurrent DNS Server: 192.168.18.1\n       DNS Servers: 192.168.18.1\nNAME     SIZE TYPE MOUNTPOINTS\nsda       20G disk \n├─sda1    19G part /\n├─sda14    4M part \n├─sda15  106M part /boot/efi\n└─sda16  913M part /boot\nsr0       68K rom  \n",
+    "timestamp": "2026-10-31T10:47:35.780823-05:00",
+    "slug": "01-sistema",
+    "title": "Identidad, sistema operativo y red"
+  },
+  {
+    "command": "nginx -v; dpkg-query -W nginx nginx-common; sudo nginx -t; systemctl is-active nginx; systemctl is-enabled nginx; systemctl status nginx --no-pager | head -n 13; ss -ltn | grep -E \":(22|80) \"",
+    "exit_code": 0,
+    "output": "nginx\t1.24.0-2ubuntu7.19\nnginx-common\t1.24.0-2ubuntu7.19\nactive\nenabled\n● nginx.service - A high performance web server and a reverse proxy server\n     Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: enabled)\n     Active: active (running) since Sat 2026-10-31 10:47:09 -05; 26s ago\n       Docs: man:nginx(8)\n   Main PID: 4020 (nginx)\n      Tasks: 2 (limit: 2316)\n     Memory: 1.9M (peak: 3.7M)\n        CPU: 43ms\n     CGroup: /system.slice/nginx.service\n             ├─4020 \"nginx: master process /usr/sbin/nginx -g daemon on; master_process on;\"\n             └─4532 \"nginx: worker process\"\n\nOct 31 10:47:09 web-unmsm systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...\nLISTEN 0      511          0.0.0.0:80        0.0.0.0:*          \nLISTEN 0      4096         0.0.0.0:22        0.0.0.0:*          \nLISTEN 0      511             [::]:80           [::]:*          \nLISTEN 0      4096            [::]:22           [::]:*          \nnginx version: nginx/1.24.0 (Ubuntu)\nnginx: the configuration file /etc/nginx/nginx.conf syntax is ok\nnginx: configuration file /etc/nginx/nginx.conf test is successful\n",
+    "timestamp": "2026-10-31T10:47:35.882855-05:00",
+    "slug": "02-nginx",
+    "title": "Instalación y validación de Nginx"
+  },
+  {
+    "command": "curl -sSI http://127.0.0.1/; printf \"\\nTítulo publicado: \"; curl -s http://127.0.0.1/ | grep -o \"<title>[^<]*</title>\"; printf \"\\nRecurso inexistente: \"; curl -s -o /dev/null -w \"%{http_code}\\n\" http://127.0.0.1/no-existe; printf \"Archivo oculto: \"; curl -s -o /dev/null -w \"%{http_code}\\n\" http://127.0.0.1/.env",
+    "exit_code": 0,
+    "output": "HTTP/1.1 200 OK\r\nServer: nginx\r\nDate: Sat, 31 Oct 2026 15:47:35 GMT\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: 6860\r\nLast-Modified: Sat, 31 Oct 2026 15:47:31 GMT\r\nConnection: keep-alive\r\nETag: \"6ae60d93-1acc\"\r\nX-Content-Type-Options: nosniff\r\nReferrer-Policy: strict-origin-when-cross-origin\r\nX-Frame-Options: SAMEORIGIN\r\nContent-Security-Policy: default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'\r\nAccept-Ranges: bytes\r\n\r\n\nTítulo publicado: <title>San Marcos | Conocimiento que transforma</title>\n\nRecurso inexistente: 404\nArchivo oculto: 403\n",
+    "timestamp": "2026-10-31T10:47:35.943690-05:00",
+    "slug": "03-http",
+    "title": "Respuesta HTTP y cabeceras de seguridad"
+  },
+  {
+    "command": "id editorweb; sudo passwd -S editorweb; stat -c \"%A %U:%G %n\" /var/www/unmsm/public /var/www/unmsm/public/index.html; getfacl -p /var/www/unmsm/public | head -n 18; sudo -u editorweb bash -c 'echo \"prueba controlada\" > /var/www/unmsm/public/prueba-permisos.txt && cat /var/www/unmsm/public/prueba-permisos.txt && rm /var/www/unmsm/public/prueba-permisos.txt'; if sudo -u www-data test -w /var/www/unmsm/public; then echo \"ERROR: www-data puede escribir\"; exit 1; else echo \"CORRECTO: www-data no puede escribir\"; fi; if sudo -u editorweb test -w /etc/nginx/sites-available/unmsm; then echo \"ERROR: editor modifica configuración\"; exit 1; else echo \"CORRECTO: editorweb no modifica Nginx\"; fi; sudo -l -U editorweb",
+    "exit_code": 0,
+    "output": "uid=1001(editorweb) gid=1001(webeditors) groups=1001(webeditors)\neditorweb L 2026-10-31 0 99999 7 -1\ndrwxrwsr-x root:webeditors /var/www/unmsm/public\n-rw-rw-r-- root:webeditors /var/www/unmsm/public/index.html\n# file: /var/www/unmsm/public\n# owner: root\n# group: webeditors\n# flags: -s-\nuser::rwx\ngroup::rwx\ngroup:www-data:r-x\nmask::rwx\nother::r-x\ndefault:user::rwx\ndefault:group::rwx\ndefault:group:www-data:r-x\ndefault:group:webeditors:rwx\ndefault:mask::rwx\ndefault:other::r-x\n\nprueba controlada\nCORRECTO: www-data no puede escribir\nCORRECTO: editorweb no modifica Nginx\nUser editorweb is not allowed to run sudo on web-unmsm.\n",
+    "timestamp": "2026-10-31T10:47:36.044785-05:00",
+    "slug": "04-permisos",
+    "title": "Usuario adicional y pruebas positivas y negativas"
+  },
+  {
+    "command": "uptime; top -b -n 1 | head -n 12; free -h; df -h /; du -sh /var/www/unmsm/public; ps -C nginx -o pid,user,%cpu,%mem,cmd",
+    "exit_code": 0,
+    "output": " 10:47:36 up 5 min,  1 user,  load average: 0.82, 0.36, 0.16\ntop - 10:47:36 up 5 min,  1 user,  load average: 0.82, 0.36, 0.16\nTasks: 107 total,   1 running, 106 sleeping,   0 stopped,   0 zombie\n%Cpu(s):  0.0 us, 11.1 sy,  0.0 ni, 88.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st \nMiB Mem :   1968.1 total,   1154.5 free,    301.1 used,    669.1 buff/cache     \nMiB Swap:      0.0 total,      0.0 free,      0.0 used.   1666.9 avail Mem \n\n    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND\n   4909 andrey    20   0   12368   5528   3404 R   9.1   0.3   0:00.01 top\n      1 root      20   0   22756  13836   9496 S   0.0   0.7   0:06.83 systemd\n      2 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kthreadd\n      3 root      20   0       0      0      0 S   0.0   0.0   0:00.00 pool_wo+\n      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker+\n               total        used        free      shared  buff/cache   available\nMem:           1.9Gi       301Mi       1.1Gi       1.0Mi       669Mi       1.6Gi\nSwap:             0B          0B          0B\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        19G  1.9G   17G  11% /\n1.5M\t/var/www/unmsm/public\n    PID USER     %CPU %MEM CMD\n   4020 root      0.0  0.3 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;\n   4532 www-data  0.0  0.2 nginx: worker process\n",
+    "timestamp": "2026-10-31T10:47:36.325959-05:00",
+    "slug": "05-recursos",
+    "title": "Supervisión de CPU, memoria y disco"
+  },
+  {
+    "command": "sudo tail -n 8 /var/log/nginx/unmsm_access.log; sudo tail -n 5 /var/log/nginx/unmsm_error.log; sudo journalctl -u nginx -n 5 --no-pager",
+    "exit_code": 0,
+    "output": "127.0.0.1 - - [31/Oct/2026:10:47:35 -0500] \"HEAD / HTTP/1.1\" 200 0 \"-\" \"curl/8.5.0\"\n127.0.0.1 - - [31/Oct/2026:10:47:35 -0500] \"GET / HTTP/1.1\" 200 6860 \"-\" \"curl/8.5.0\"\n127.0.0.1 - - [31/Oct/2026:10:47:35 -0500] \"GET /no-existe HTTP/1.1\" 404 146 \"-\" \"curl/8.5.0\"\n127.0.0.1 - - [31/Oct/2026:10:47:36 -0500] \"GET /.env HTTP/1.1\" 403 146 \"-\" \"curl/8.5.0\"\n2026/10/31 10:47:36 [error] 4532#4532: *4 access forbidden by rule, client: 127.0.0.1, server: web-unmsm, request: \"GET /.env HTTP/1.1\", host: \"127.0.0.1\"\nOct 31 10:47:09 web-unmsm systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...\nOct 31 10:47:09 web-unmsm systemd[1]: Started nginx.service - A high performance web server and a reverse proxy server.\nOct 31 10:47:33 web-unmsm systemd[1]: Reloading nginx.service - A high performance web server and a reverse proxy server...\nOct 31 10:47:33 web-unmsm nginx[4531]: 2026/10/31 10:47:33 [notice] 4531#4531: signal process started\nOct 31 10:47:33 web-unmsm systemd[1]: Reloaded nginx.service - A high performance web server and a reverse proxy server.\n",
+    "timestamp": "2026-10-31T10:47:36.382919-05:00",
+    "slug": "06-registros",
+    "title": "Registros de actividad y errores"
+  },
+  {
+    "command": "sudo ufw status verbose; systemctl list-timers unmsm-backup.timer --no-pager; systemctl cat unmsm-backup.timer",
+    "exit_code": 0,
+    "output": "Status: active\nLogging: on (low)\nDefault: deny (incoming), allow (outgoing), disabled (routed)\nNew profiles: skip\n\nTo                         Action      From\n--                         ------      ----\n22/tcp (OpenSSH)           ALLOW IN    Anywhere                  \n80/tcp (Nginx HTTP)        ALLOW IN    Anywhere                  \n22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)             \n80/tcp (Nginx HTTP (v6))   ALLOW IN    Anywhere (v6)             \n\nNEXT                        LEFT LAST PASSED UNIT               ACTIVATES\nSun 2026-11-01 02:00:00 -05  15h -         - unmsm-backup.timer unmsm-backup.service\n\n1 timers listed.\nPass --all to see loaded but inactive timers, too.\n# /etc/systemd/system/unmsm-backup.timer\n[Unit]\nDescription=Copia diaria del sitio UNMSM a las 02:00\n[Timer]\nOnCalendar=*-*-* 02:00:00\nPersistent=true\n[Install]\nWantedBy=timers.target\n",
+    "timestamp": "2026-10-31T10:47:36.521750-05:00",
+    "slug": "07-seguridad",
+    "title": "Firewall y servicio de copia automática"
+  },
+  {
+    "command": "sudo bash -c 'set -e; /usr/local/sbin/backup-unmsm; cd /var/backups/unmsm; latest=$(ls -t *.tar.gz | head -n 1); sha256sum -c \"$latest.sha256\"; restore=$(mktemp -d /tmp/unmsm-restore.XXXXXX); tar --acls -xzpf \"$latest\" -C \"$restore\"; diff -rq /var/www/unmsm/public \"$restore/var/www/unmsm/public\"; echo RESTAURACION_VERIFICADA_SIN_DIFERENCIAS; ls -lh \"$latest\" \"$latest.sha256\"; printf \"Directorio de prueba: %s\\n\" \"$restore\"; tar -tzf \"$latest\" | head -n 12'",
+    "exit_code": 0,
+    "output": "Copia creada: /var/backups/unmsm/unmsm-20261031-104736.tar.gz\nunmsm-20261031-104736.tar.gz: OK\nRESTAURACION_VERIFICADA_SIN_DIFERENCIAS\n-rw------- 1 root root 1.2M Oct 31 10:47 unmsm-20261031-104736.tar.gz\n-rw------- 1 root root   95 Oct 31 10:47 unmsm-20261031-104736.tar.gz.sha256\nDirectorio de prueba: /tmp/unmsm-restore.GMtSiW\nvar/www/unmsm/\nvar/www/unmsm/public/\nvar/www/unmsm/public/app.js\nvar/www/unmsm/public/assets/\nvar/www/unmsm/public/assets/cooperacion.jpg\nvar/www/unmsm/public/assets/logo.svg\nvar/www/unmsm/public/assets/historia.jpg\nvar/www/unmsm/public/assets/bg-menu.png\nvar/www/unmsm/public/assets/investigacion.jpg\nvar/www/unmsm/public/styles.css\nvar/www/unmsm/public/index.html\netc/nginx/sites-available/unmsm\n",
+    "timestamp": "2026-10-31T10:47:36.717498-05:00",
+    "slug": "08-respaldo",
+    "title": "Copia, integridad y restauración de prueba"
+  }
+]

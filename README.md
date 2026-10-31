@@ -16,6 +16,8 @@ GitHub Pages aloja una copia estática para que se pueda revisar la página sin 
 
 ## Qué incluye el proyecto
 
+El [informe técnico en PDF](informe/Informe_Servidor_Web_UNMSM_APA7.pdf) desarrolla las diez indicaciones, incluye 15 figuras y responde las cinco preguntas de análisis. Se presenta como trabajo estudiantil en APA 7, con referencias, sangría francesa y capturas explicadas. También se conserva una [fuente editable en Markdown](informe/Informe_Servidor_Web_UNMSM_APA7.md).
+
 | Carpeta | Contenido |
 | --- | --- |
 | `dist/` | HTML, CSS, JavaScript e imágenes locales del sitio |
@@ -68,6 +70,10 @@ curl -I http://127.0.0.1/
 
 El guion crea `editorweb` y el grupo `webeditors`, publica el contenido en `/var/www/unmsm/public`, configura Nginx, habilita UFW y programa una copia diaria a las 02:00.
 
+Los guiones auxiliares de Python requieren `python -m pip install -r infra/requirements.txt`. Para automatizar la VM, `preparar_seed.py` crea un disco NoCloud y una clave local; `crear_vm.ps1` registra una máquina nueva a partir del VDI y el disco de configuración. Debe ejecutarse solamente cuando no exista ya una VM con ese nombre. El DNS de `preparar_seed.py` se adapta a la red antes de generar el disco.
+
+La imagen oficial se obtiene de https://cloud-images.ubuntu.com/noble/current/ y se comprueba con `SHA256SUMS`. El disco original se convierte mediante `VBoxManage clonemedium disk ORIGINAL.vmdk ubuntu-lab.vdi --format VDI` y se amplía con `VBoxManage modifymedium disk ubuntu-lab.vdi --resize 20480`. No se incluyen los discos binarios en Git para evitar archivos de gran tamaño; la máquina utilizada para las pruebas queda registrada localmente en VirtualBox.
+
 ## Permisos que apliqué
 
 El propietario del sitio es `root` y el grupo es `webeditors`. Los directorios utilizan `2775`, de modo que conservan el grupo en los nuevos elementos, y los archivos iniciales utilizan `664`. Las ACL permiten leer al proceso `www-data` sin darle escritura. `editorweb` no pertenece a `sudo`; su contraseña queda bloqueada y las pruebas se realizan mediante `sudo -u editorweb` desde la cuenta administradora.
@@ -116,3 +122,11 @@ En la configuración del repositorio, abrir **Pages**, elegir la rama `main` y l
 ## Recursos gráficos
 
 Las imágenes, el escudo y el fondo del encabezado proceden del portal oficial de la UNMSM. Se conservan sus derechos institucionales. Esta página es un proyecto académico de presentación y enlaza a los servicios oficiales; no recibe credenciales ni reemplaza el portal institucional.
+
+## Guías consultadas para el informe
+
+- [Guía oficial de configuración de un trabajo estudiantil APA 7](https://apastyle.apa.org/instructional-aids/student-paper-setup-guide.pdf).
+- [Portada estudiantil](https://apastyle.apa.org/style-grammar-guidelines/paper-format/title-page).
+- [Tablas y figuras](https://apastyle.apa.org/style-grammar-guidelines/tables-figures).
+
+El documento utiliza Times New Roman de 12 puntos, márgenes de 2.54 cm, doble espacio en el cuerpo y las referencias, sangría inicial de 1.27 cm y números de página en la parte superior derecha. Los bloques de código y las notas de figuras se ajustan para mantener su legibilidad.

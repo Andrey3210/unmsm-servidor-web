@@ -1,0 +1,6 @@
+{
+  "command": "hostname; systemctl is-active nginx; systemctl is-enabled nginx; systemctl is-active unmsm-backup.timer; ip -br address; curl -s -o /dev/null -w \"%{http_code}\\n\" http://127.0.0.1/; getent ahostsv4 archive.ubuntu.com | head -n 1",
+  "exit_code": 0,
+  "output": "web-unmsm\nactive\nenabled\nactive\nlo               UNKNOWN        127.0.0.1/8 ::1/128 \nenp0s3           UP             10.0.2.15/24 fe80::a00:27ff:fe02:d0f3/64 \n200\n91.189.91.82    STREAM archive.ubuntu.com\n",
+  "timestamp": "2026-10-31T10:59:12.120876-05:00"
+}

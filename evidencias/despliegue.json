@@ -1,0 +1,6 @@
+{
+  "command": "bash /home/andrey/lab/infra/administrar.sh",
+  "exit_code": 0,
+  "output": "Rules updated\nRules updated (v6)\nRules updated\nRules updated (v6)\nFirewall is active and enabled on system startup\nCopia creada: /var/backups/unmsm/unmsm-20261031-104734.tar.gz\nnginx: the configuration file /etc/nginx/nginx.conf syntax is ok\nnginx: configuration file /etc/nginx/nginx.conf test is successful\nSynchronizing state of nginx.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.\nExecuting: /usr/lib/systemd/systemd-sysv-install enable nginx\nCreated symlink /etc/systemd/system/timers.target.wants/unmsm-backup.timer → /etc/systemd/system/unmsm-backup.timer.\n",
+  "timestamp": "2026-10-31T10:47:34.974060-05:00"
+}
