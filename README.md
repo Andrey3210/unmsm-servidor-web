@@ -1,10 +1,18 @@
 # Implementación y administración de un servidor web
 
-**Autor:** Andrey Hegel Zafra Venegas  
+**Grupo:** 7  
+**Integrantes:**
+
+- Andrey Hegel Zafra Venegas
+- Luis Guillermo Quispe Alvarado
+- Estefano Alexis Ramirez Garcia
+- Maleck Adriano Ramirez Alvarez
+- Joselin Victoria Gutierrez Mamani
+
 **Curso:** Taller de Construcción de Software Web  
 **Universidad:** Universidad Nacional Mayor de San Marcos
 
-Implementé una página de presentación de la UNMSM y la publiqué en una máquina virtual con Ubuntu Server y Nginx. El diseño toma como referencia los tonos granate y dorado, el encabezado institucional y las fotografías del [portal oficial](https://www.unmsm.edu.pe/).
+Implementamos una página de presentación de la UNMSM y la publicamos en una máquina virtual con Ubuntu Server y Nginx. El diseño toma como referencia los tonos granate y dorado, el encabezado institucional y las fotografías del [portal oficial](https://www.unmsm.edu.pe/).
 
 ## Enlaces
 
@@ -12,7 +20,7 @@ Implementé una página de presentación de la UNMSM y la publiqué en una máqu
 - Repositorio: https://github.com/Andrey3210/unmsm-servidor-web
 - Servidor del laboratorio: http://127.0.0.1:8088/ (con la VM encendida).
 
-GitHub Pages aloja una copia estática para que se pueda revisar la página sin depender de mi computadora. Las pruebas de administración corresponden a Ubuntu Server con Nginx, no a GitHub Pages.
+GitHub Pages aloja una copia estática para que se pueda revisar la página sin depender del equipo del laboratorio. Las pruebas de administración corresponden a Ubuntu Server con Nginx, no a GitHub Pages.
 
 ## Qué incluye el proyecto
 
@@ -25,7 +33,7 @@ El [informe técnico en PDF](informe/Informe_Servidor_Web_UNMSM_APA7.pdf) desarr
 | `evidencias/` | Capturas, configuración de VirtualBox y resultados reales de las pruebas |
 | `informe/` | Informe técnico en PDF y su fuente editable |
 
-## Entorno que utilicé
+## Entorno que utilizamos
 
 - VirtualBox 7.0.26, máquina `UNMSM-Web-Lab`.
 - Ubuntu Server 24.04.5 LTS, kernel 6.8.0-147-generic.
@@ -74,7 +82,7 @@ Los guiones auxiliares de Python requieren `python -m pip install -r infra/requi
 
 La imagen oficial se obtiene de https://cloud-images.ubuntu.com/noble/current/ y se comprueba con `SHA256SUMS`. El disco original se convierte mediante `VBoxManage clonemedium disk ORIGINAL.vmdk ubuntu-lab.vdi --format VDI` y se amplía con `VBoxManage modifymedium disk ubuntu-lab.vdi --resize 20480`. No se incluyen los discos binarios en Git para evitar archivos de gran tamaño; la máquina utilizada para las pruebas queda registrada localmente en VirtualBox.
 
-## Permisos que apliqué
+## Permisos que aplicamos
 
 El propietario del sitio es `root` y el grupo es `webeditors`. Los directorios utilizan `2775`, de modo que conservan el grupo en los nuevos elementos, y los archivos iniciales utilizan `664`. Las ACL permiten leer al proceso `www-data` sin darle escritura. `editorweb` no pertenece a `sudo`; su contraseña queda bloqueada y las pruebas se realizan mediante `sudo -u editorweb` desde la cuenta administradora.
 
@@ -99,7 +107,7 @@ sudo /usr/local/sbin/backup-unmsm
 systemctl list-timers unmsm-backup.timer
 ```
 
-Las copias se guardan en `/var/backups/unmsm/`, con un archivo SHA-256. Comprobé la integridad y extraje el contenido a un directorio temporal; `diff -rq` no encontró diferencias respecto del sitio original. El respaldo incluye los archivos publicados y la configuración del sitio Nginx. Es una copia local de laboratorio; un entorno de producción también necesita una copia externa y una política de retención.
+Las copias se guardan en `/var/backups/unmsm/`, con un archivo SHA-256. Comprobamos la integridad y extrajimos el contenido a un directorio temporal; `diff -rq` no encontró diferencias respecto del sitio original. El respaldo incluye los archivos publicados y la configuración del sitio Nginx. Es una copia local de laboratorio; un entorno de producción también necesita una copia externa y una política de retención.
 
 ## Comprobaciones realizadas
 
